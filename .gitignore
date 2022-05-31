@@ -6,7 +6,6 @@ __pycache__/
 */migrations/*
 **/migrations/*
 */logs/*
-config/*
 */db/*
 staticfiles/*
 db.sqlite3
@@ -143,7 +142,6 @@ eggs/
 .eggs/
 parts/
 sdist/
-var/
 wheels/
 *.egg-info/
 .installed.cfg
