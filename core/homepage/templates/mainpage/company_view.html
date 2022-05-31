@@ -1,0 +1,227 @@
+{% extends 'mainpage/index/index.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block javascript %}
+    <script src="{% static 'mainpage/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'mainpage/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'mainpage/vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/formvalidation-1.8.0/css/formValidation.min.css' %}">
+    <script src="{% static 'lib/formvalidation-1.8.0/js/es6-shim.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-1.8.0/js/FormValidation.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-1.8.0/js/plugins/Bootstrap.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-1.8.0/js/locales/es_ES.min.js' %}"></script>
+    <script src="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.css' %}"/>
+    <script src="{% static 'lib/sweetalert2-11.0.16/sweetalert2.all.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/sweetalert2-11.0.16/sweetalert2.min.css' %}"/>
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
+    
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}"/>
+    <script src="{% static 'js/functions.js' %}"></script>
+
+
+    
+    <script>
+      function initMap() {
+                  
+          var latitude = {{ prueba.get_latitude }};
+          var longitude = {{ prueba.get_longitude }};
+        
+          const myLatLng = {
+              lat: latitude, lng: longitude
+          }
+          const map = new google.maps.Map(document.getElementById("map"), {
+              zoom: 16,
+              center: myLatLng
+          });
+
+          const marker = new google.maps.Marker({
+              position: myLatLng,
+              map,
+              title: "Hello World!"
+          });
+
+          const infowindow = new google.maps.InfoWindow({
+              content: '<p>' + "{{ mainpage.name }}" + '</p>'
+          });
+
+          marker.addListener("click", () => {
+              infowindow.open(map, marker);
+          });
+
+      }
+
+      $(function () {
+          initMap();
+      })
+
+  </script>
+
+{% endblock %}
+
+<!--  TITULO  -->
+
+{% block titulo %}
+{% if companys%}
+{% for a in companys %}
+    <h2>
+         {{a.name }}
+    </h2>
+    <p>
+        {{ a.desc }}
+    </p>
+{% endfor %}
+{% else %}
+<h2>
+    Aun estamos trabajando en este sector..
+</h2>
+{% endif %}
+
+{% endblock %}
+
+<!--  IMAGEN  -->
+{% block imagen %}
+{% if companys%}
+{% for a in companys %}
+<img src=" {{ a.icon_image.url }} " alt="" class="img-fluid">
+{% endfor %}
+{% else %}
+<img src="{% static 'mainpage/index/assets/img/peneg.png' %}" alt="" class="img-fluid nuevo">
+{% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+    <br>
+    {% if companys%}
+    <div class="container">
+            <!-- ======= Team Section ======= -->
+           <!-- ======= Portfolio Section ======= -->
+    <section id="portfolio" class="portfolio section-bg">
+        <div class="container" data-aos="fade-up">
+  
+          <header class="section-header">
+            <h3 class="section-title">Catálogo</h3>
+          </header>
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#activity" data-toggle="tab">Productos</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#timeline" data-toggle="tab">Información</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#settings" data-toggle="tab"
+                      >Ubicación</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="tab-pane active" id="activity">
+                    <div class="card">
+                      
+                      <div class="card-body">
+                        <div class="row">
+
+                        
+
+                        {% if productcount > 0 %}
+                        {%for l in product %}
+                        <div class="col-lg-4 col-md-6 portfolio-item filter-app ">
+                          <div class="portfolio-wrap">
+                            <img src=" {{ l.image.url }} " class="img-fluid" alt="">
+                            <div class="portfolio-info">
+                              <h4><a href="portfolio-details.html"> {{ l.name }} </a></h4>
+                              <p> {{ l.category.name }} </p>
+                              <div>
+                                <a href="#" data-gallery="portfolioGallery" title="Trabajando" class="link-preview portfolio-lightbox"><i class="bi bi-plus"></i></a>
+                                <a href="#" class="link-details" title="Trabajando"><i class="bi bi-link"></i></a>
+                              </div>
+                            </div>
+                          </div>
+                        
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+
+                      </div>
+                    </div>
+                  </div>
+          
+                  <div class="tab-pane" id="timeline">
+                    <div class="timeline timeline-inverse">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="card card-primary">
+                            <div class="card-header">
+                              <h3 class="card-title">¿Quiénes somos?</h3>
+                            </div>
+                          
+                            <div class="card-body">
+                              <p class="text-muted">
+                                {{ prueba.with_us }}
+                              </p>
+                              <hr />
+                              <strong><i class="fas fa-map-marker-alt mr-1"></i> Ubicación</strong>
+                              <p class="text-muted"> {{ prueba.address }} </p>
+                              <hr />
+                              <strong><i class="fas fa-pencil-alt mr-1"></i> Misión </strong>
+                              <p class="text-muted">
+                                {{ prueba.mission }}
+                              </p>
+                              <hr />
+                              
+                              <strong><i class="fas fa-pencil-alt mr-1"></i> Visión </strong>
+                              <p class="text-muted">
+                                {{ prueba.vision }}
+                              </p>
+                              <hr />
+                              <strong><i class="fa fa-undo" aria-hidden="true"></i>
+                                Horarios de atención</strong>
+                              <p class="text-muted">
+                                {{ prueba.horary }}
+                              </p>
+                            </div>
+                          </div>
+                            
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+          
+                  <div class="tab-pane" id="settings">
+                    <div>
+                      <div id="map"></div>
+                      <script src="https://maps.googleapis.com/maps/api/js?key={{ keygooglemaps }}"></script>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section><!-- End Portfolio Section -->
+  
+    </div>
+    {% endif %}
+ 
+    <br>
+    {% block formulario  %}
+   
+    {% endblock %}
+    
+
+{% endblock %}

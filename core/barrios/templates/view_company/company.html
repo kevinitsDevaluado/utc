@@ -1,0 +1,388 @@
+{% extends 'skin.html' %}
+{% load widget_tweaks %}
+
+{% load static %}
+
+{% block head_body %}
+<link rel="stylesheet" href="{% static 'lib/formvalidation-1.8.0/css/formValidation.min.css' %}">
+<script src="{% static 'lib/formvalidation-1.8.0/js/es6-shim.min.js' %}"></script>
+<script src="{% static 'lib/formvalidation-1.8.0/js/FormValidation.min.js' %}"></script>
+<script src="{% static 'lib/formvalidation-1.8.0/js/plugins/Bootstrap.min.js' %}"></script>
+<script src="{% static 'lib/formvalidation-1.8.0/js/locales/es_ES.min.js' %}"></script>
+
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+{#    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/jquery.dataTables.min.css' %}"/>#}
+<script src="{% static 'lib/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+<script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
+
+<script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.css' %}"/>
+
+<link rel="stylesheet" href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}"/>
+<script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
+
+<script src="{% static 'product/js/form.js' %}"></script>
+<script src="{% static 'category/js/form.js' %}"></script>
+
+
+<script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.js' %}"></script>
+<script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
+<script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
+<link rel="stylesheet" href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}"/>
+
+
+{% block head_list %}{% endblock %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card {{ dshboard.card }}">
+    <div class="card-header">
+        <h3 class="card-title">
+            {{ title }}
+        </h3>
+        <div class="card-tools">
+            <small>Su último acceso al sistema fue el {{ request.user.last_login }}</small>
+        </div>
+    </div>
+    <div class="card-body" style="display: block;">
+        <div class="container-fluid">
+            <div class="card card-widget widget-user">
+                <div class="widget-user-header bg-dark">
+                    <h3 class="widget-user-username">
+                        <strong> EMPRESA {{ company.name }}</strong> 
+                    </h3>
+                    <p class="widget-user-desc">
+                        {{ company.desc }}
+                    </p>
+                </div>
+                <div class="card-footer" style="background-color: white;">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <img src=" {{ company.icon_image.url }} " style="width: 50%;"
+                                 class="img-fluid d-block mx-auto mb-2">
+                        </div>
+                    </div>
+                    <div class="row">
+                           <!-- MODAL CREAR PRODUCT -->
+                        <div class="col-sm-6 border-right">
+                            <div class="description-block">
+                                <h5 class="description-header">
+                                    
+                                </h5>
+                                <span class="description-text">
+                                    <a
+                                    id="modalActivate" type="button"
+                                    data-toggle="modal" data-target="#exampleModalPreview-4 "
+                                    data-toggle="tooltip"
+                                    title="Editar registro"
+                                    class="btn btn-dark btn-flat"
+                                    >
+                                        <i class="fas fa-edit">CREAR PRODUCTO</i>
+                                    </a>
+                                    <!-- Modal Agregar lISTA -->
+                                    <div class="modal fade right" id="exampleModalPreview-4" tabindex="-1" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog momodel modal-fluid" role="document">
+                                            <div class="modal-content modal-content ">
+                                                <div class=" modal-header   modal-header text-center">
+                                                    <h5 class="modal-title w-100" id="exampleModalPreviewLabel"> PRODUCTO </h5>
+                                                    <button type="button" class="close " data-dismiss="modal" aria-label="Close">
+                                                        <span style="font-size: 1.3em;" aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <!-- FORMULARIO -->
+                                                <div class="modal-body">
+                                                    <form class="form" method="post" enctype="multipart/form-data" id="frmProduct"
+                                                    data-url="{{ list_url }}">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <div class="form-group">
+                                                                {% for a in formProduct.visible_fields %}
+                                                                     <label>{{ a.label }}:</label>
+                                                                     {{ a|add_class:'form-control'|attr:"autocomplete:off" }}
+                                                                {%endfor%}
+                                                            </div>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Registrar</button>
+
+                                                    </form>
+                                                    
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        <!-- MODAL CREAR CATEGORÍA  -->
+                        <div class="col-sm-6 border-right">
+                            <div class="description-block">
+                                <span class="description-text">
+                                    <a
+                                    id="modalActivate" type="button"
+                                    data-toggle="modal" data-target="#exampleModalPreview-3 "
+                                    data-toggle="tooltip"
+                                    title="Editar registro"
+                                    class="btn btn-dark btn-flat"
+                                    >
+                                        <i class="fas fa-edit">CREAR CATEGORÍA</i>
+                                    </a>
+                                    <!-- Modal Agregar lISTA -->
+                                    <div class="modal fade right" id="exampleModalPreview-3" tabindex="-3" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog momodel modal-fluid" role="document">
+                                            <div class="modal-content modal-content ">
+                                                <div class=" modal-header">
+                                                    <h5 class="modal-title w-100" id="exampleModalPreviewLabel"> Categoría </h5>
+                                                    <button type="button" class="close " data-dismiss="modal" aria-label="Close">
+                                                        <span style="font-size: 1.3em;" aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <!-- FORMULARIO -->
+                                                <div class="modal-body">
+                                                    <form class="form" method="post" enctype="multipart/form-data" id="frmCategory"
+                                                    data-url="{{ list_url }}">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            {% for a in formCategory.visible_fields %}
+                                                                 <label>{{ a.label }}:</label>
+                                                                 {{ a|add_class:'form-control'|attr:"autocomplete:off" }}
+                                                            {%endfor%}
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Registrar</button>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                      
+                      
+                    </div>
+                </div>
+            </div>
+
+             <!-- REUNIONES -->
+             <div class="card card-widget">
+                <div class="card-header">
+                    <div class="user-block">
+                        <img class="img-circle" src="{% static 'img/default/noticias.png' %}" alt="User Image">
+                        <span class="username"><a href="">CATEGORÍAS</a></span>
+                        <span class="description">{{ date_joined }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <table width="100%" class="table table-bordered table-striped" id="data3">
+                                    <thead>
+                                    <tr>
+                                        <!--Columns-->
+                                        <th class="text-center">Nro</th>
+                                        <th class="text-center">Nombre</th>
+                                        <th class="text-center">Imagen</th>
+                                        <th class="text-center">Opciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--Rows-->
+                                    {% for i in category  %}
+                                    <tr>
+                                        <td>{{ i.id }}</td>
+                                        <td>{{ i.name | upper}}</td>
+                                        <td> 
+                                            {% if i.image %}
+                                            <img src=" {{ i.image.url }} " alt="">
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{% url 'companyc_update' i.id %}" data-toggle="tooltip" title="Editar registro"
+                                            class="btn btn-warning btn-xs btn-flat">
+                                             <i class="fas fa-edit" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{% url 'companyc_delete' i.id %}" rel="delete" data-toggle="tooltip" title="Eliminar registro"
+                                                class="btn btn-danger btn-xs btn-flat">
+                                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>                                    
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+
+            <!-- REUNIONES -->
+            <div class="card card-widget">
+                <div class="card-header">
+                    <div class="user-block">
+                        <img class="img-circle" src="{% static 'img/default/noticias.png' %}" alt="User Image">
+                        <span class="username"><a href="">Productos</a></span>
+                        <span class="description">{{ date_joined }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <table width="100%" class="table table-bordered table-striped" id="data">
+                                    <thead>
+                                    <tr>
+                                        <!--Columns-->
+                                        <th class="text-center">Nro</th>
+                                        <th class="text-center">Nombre</th>
+                                        <th class="text-center">Imagen</th>
+                                        <th class="text-center">Opciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--Rows-->
+                                    {% for i in product  %}
+                                    <tr>
+                                        <td>{{ i.id }}</td>
+                                        <td>{{ i.name | upper}}</td>
+                                        <td> 
+                                            {% if i.image %}
+                                            <img src=" {{ i.image.url }} " alt="" class="img-fluid" width="200" height="200"/>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{% url 'companyc_update' i.id %}" data-toggle="tooltip" title="Editar registro"
+                                            class="btn btn-warning btn-xs btn-flat">
+                                             <i class="fas fa-edit" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{% url 'companyc_delete' i.id %}" rel="delete" data-toggle="tooltip" title="Eliminar registro"
+                                                class="btn btn-danger btn-xs btn-flat">
+                                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>                                    
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+
+           
+            <!---->
+            <div class="card-footer">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    {% if messages %}
+            var html = '<p>';
+            {% for message in messages %}
+                html += '{{ message }}<br>';
+            {% endfor %}
+            html += '</p>';
+            Swal.fire({
+                title: 'Mensaje!',
+                html: html,
+                icon: 'info'
+            });
+    {% endif %}
+</script>
+
+{% block box_footer_after %}
+
+{% endblock %}
+{% block javascript_list %}
+<script type="application/javascript">
+    
+    
+    var table;
+    $(function () {
+        table = $('#data').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+        $('.table')
+            .on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            .on('click', 'img', function () {
+                var src = $(this).attr('src');
+                load_image(src);
+            });
+    });
+
+    var table1;
+    $(function () {
+        table1 = $('#data1').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+        $('.table')
+            .on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            .on('click', 'img', function () {
+                var src = $(this).attr('src');
+                load_image(src);
+            });
+    });
+
+    var table2;
+    $(function () {
+        table2 = $('#data3').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+        $('.table')
+            .on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            .on('click', 'img', function () {
+                var src = $(this).attr('src');
+                load_image(src);
+            });
+    });
+</script>
+{% endblock %}
+{% endblock %}

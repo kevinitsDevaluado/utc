@@ -1,0 +1,106 @@
+{% extends 'mainpage/index/index.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block javascript %}
+    <script src="{% static 'mainpage/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'mainpage/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'mainpage/vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/formvalidation-1.8.0/css/formValidation.min.css' %}">
+    <script src="{% static 'lib/formvalidation-1.8.0/js/es6-shim.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-1.8.0/js/FormValidation.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-1.8.0/js/plugins/Bootstrap.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-1.8.0/js/locales/es_ES.min.js' %}"></script>
+    <script src="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/jquery-confirm-3.3.4/jquery-confirm.min.css' %}"/>
+    <script src="{% static 'lib/sweetalert2-11.0.16/sweetalert2.all.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/sweetalert2-11.0.16/sweetalert2.min.css' %}"/>
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
+    
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}"/>
+    <script src="{% static 'js/functions.js' %}"></script>
+    <script src="{% static 'mainpage/js/sign_in.js' %}"></script>
+{% endblock %}
+
+{% block titulo %}
+{% if companys%}
+{% for a in companys %}
+    <h2>
+        BARRIO {{a.district.name }}
+    </h2>
+{% endfor %}
+{% else %}
+<h2>
+    Aun estamos trabajando en este sector..
+</h2>
+{% endif %}
+
+{% endblock %}
+
+
+<!--  IMAGEN  -->
+{% block imagen %}
+{% if companys%}
+{% for a in companys %}
+<img src=" {{ a.district.image.url }} " alt="" class="img-fluid" height="100%" width="100%">
+{% endfor %}
+{% else %}
+<img src="{% static 'mainpage/index/assets/img/peneg.png' %}" alt="" class="img-fluid nuevo">
+{% endif %}
+
+{% endblock %}
+
+
+
+
+
+
+{% block content %}
+    <br>
+    {% if companys %}
+    <div class="container">
+            <!-- ======= Team Section ======= -->
+            <section id="emprendimientos" class="team section-bg">
+                <div class="container" data-aos="fade-up">
+                <div class="section-header">
+                    <h3>Emprendimientos</h3>
+                    <p></p>
+                </div>
+
+                <div class="row">
+                    {% for a in companys %}
+                    <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <a href="{% url 'verCompanys' a.id %}">
+                        <div class="member">
+                        <img src=" {{ a.icon_image.url }} " class="img-fluid" alt="">
+                        <div class="member-info">
+                            <div class="member-info-content">
+                            <h4> {{ a.name }} </h4>
+                            </div>
+                        </div>
+                        </div>
+                    </a>
+                    
+                    </div>
+                    {% endfor %}
+
+                
+                </div>
+
+                </div>
+            </section><!-- End Team Section -->
+
+    </div>
+    {% endif %}
+ 
+    <br>
+    {% block formulario  %}
+   
+    {% endblock %}
+
+{% endblock %}

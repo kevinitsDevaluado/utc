@@ -1,0 +1,273 @@
+{% extends 'skin.html' %}
+{% load widget_tweaks %}
+
+{% load static %}
+
+{% block head_body %}
+
+<link rel="stylesheet" href="{% static 'lib/formvalidation-1.8.0/css/formValidation.min.css' %}">
+<script src="{% static 'lib/formvalidation-1.8.0/js/es6-shim.min.js' %}"></script>
+<script src="{% static 'lib/formvalidation-1.8.0/js/FormValidation.min.js' %}"></script>
+<script src="{% static 'lib/formvalidation-1.8.0/js/plugins/Bootstrap.min.js' %}"></script>
+<script src="{% static 'lib/formvalidation-1.8.0/js/locales/es_ES.min.js' %}"></script>
+
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+{#    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/jquery.dataTables.min.css' %}"/>#}
+<script src="{% static 'lib/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+<script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
+
+<script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.css' %}"/>
+
+<link rel="stylesheet" href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}"/>
+<script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
+
+
+
+
+<script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.js' %}"></script>
+<script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
+<script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
+<link rel="stylesheet" href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}"/>
+{% block head_list %}{% endblock %}
+
+{% endblock %}
+
+{% block content %}
+
+<section class="content">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"> {{ info.cuota }} </h3>
+        <div class="card-tools">
+          <button
+            type="button"
+            class="btn btn-tool"
+            data-card-widget="collapse"
+            title="Collapse"
+          >
+            <i class="fas fa-minus"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-tool"
+            data-card-widget="remove"
+            title="Remove"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
+            <div class="row">
+              <div class="col-12 col-sm-4">
+                <div class="info-box bg-light">
+                  <div class="info-box-content">
+                    <span class="info-box-text text-center text-muted"
+                      >Total de Deudores</span
+                    >
+                    <span class="info-box-number text-center text-muted mb-0"
+                      > {{ count }} </span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-4">
+                <div class="info-box bg-light">
+                  <div class="info-box-content">
+                    <span class="info-box-text text-center text-muted"
+                      >Total de Pagados</span
+                    >
+                    <span class="info-box-number text-center text-muted mb-0"
+                      >  {{ count2 }} </span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-4">
+                <div class="info-box bg-light">
+                  <div class="info-box-content">
+                    <span class="info-box-text text-center text-muted"
+                      ></span
+                    >
+                    <span class="info-box-number text-center text-muted mb-0">
+                      
+                      <a
+                      type="button"
+                      title="Editar registro"
+                      class="btn btn-dark btn-flat"
+                      href="{% url 'verBarrio' barrio.id %}"
+                      >
+                      <i class="fas fa-undo">REGRESAR</i></a>
+                      </span>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h4>Actividades</h4>
+                
+                <div class="post clearfix">
+                  <div class="card  {{ dshboard.card }}">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Moradores
+                        </h3>
+                        <div class="card-tools">
+                            <small>Su último acceso al sistema fue el {{ request.user.last_login }}</small>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div class="container-fluid">
+                            <table width="100%" class="table table-bordered table-striped" id="data3">
+                                <thead>
+                                <tr>
+                                    <!--Columns-->
+                                    <th class="text-center">Nro</th>
+                                    <th class="text-center">Nombre</th>
+                                    <th class="text-center">Apellidos</th>
+                                    <th class="text-center">Cédula</th>
+                                    <th class="text-center">Saldo</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-center">Opciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!--Rows-->
+                                {% for i in debt  %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ i.user.user.first_name | upper}}</td>
+                                    <td> {{ i.user.user.last_name | upper }}</td>
+                                    <td> {{ i.user.user.dni | upper }}</td>
+                                    <td> {{ i.monto | upper }}</td>
+                                    {% if i.state == True  %}
+                                    <td>  DEUDA </td>
+                                    {% else %}
+                                    <td> PAGADO </td>
+                                    {% endif %}
+                                    <td> 
+                                      <div class="container">
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                              Menú
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                              <a class="dropdown-item" href="{% url 'verPagos' i.id %}"><i class="fa fa-sign-in" aria-hidden="true"></i>Ver Cuota</a>
+                                            </div>
+                                          </div>
+                                      </div>
+                                    </td>
+                              
+                                </tr>                                    
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>  
+                  </div>
+                </div>
+               
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
+            <h3 class="text-primary">
+                <i class="fa fa-university" aria-hidden="true"></i> {{ info.district.name }}
+            </h3>
+            <p class="text-muted">
+               <strong>Monto a pagar:</strong>  <br>
+              {{ info.monto }}
+            </p>
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> 
+  
+
+
+{% block box_footer_after %}
+{% endblock %}
+{% block javascript_list %}
+<script type="application/javascript">
+    
+    
+    var table;
+    $(function () {
+        table = $('#data').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+        $('.table')
+            .on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            .on('click', 'img', function () {
+                var src = $(this).attr('src');
+                load_image(src);
+            });
+    });
+
+    var table1;
+    $(function () {
+        table1 = $('#data1').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+        $('.table')
+            .on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            .on('click', 'img', function () {
+                var src = $(this).attr('src');
+                load_image(src);
+            });
+    });
+
+    var table2;
+    $(function () {
+        table2 = $('#data3').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+        $('.table')
+            .on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            .on('click', 'img', function () {
+                var src = $(this).attr('src');
+                load_image(src);
+            });
+    });
+</script>
+{% endblock %}
+{% endblock %}

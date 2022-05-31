@@ -1,0 +1,503 @@
+{% extends 'skin.html' %}
+{% load widget_tweaks %}
+
+{% load static %}
+
+{% block head_body %}
+<link rel="stylesheet" href="{% static 'lib/formvalidation-1.8.0/css/formValidation.min.css' %}">
+<script src="{% static 'lib/formvalidation-1.8.0/js/es6-shim.min.js' %}"></script>
+<script src="{% static 'lib/formvalidation-1.8.0/js/FormValidation.min.js' %}"></script>
+<script src="{% static 'lib/formvalidation-1.8.0/js/plugins/Bootstrap.min.js' %}"></script>
+<script src="{% static 'lib/formvalidation-1.8.0/js/locales/es_ES.min.js' %}"></script>
+
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+{#    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/jquery.dataTables.min.css' %}"/>#}
+<script src="{% static 'lib/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+<script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
+
+<script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.css' %}"/>
+
+<link rel="stylesheet" href="{% static 'lib/bootstrap-touchspin-4.2.5/css/jquery.bootstrap-touchspin.css' %}"/>
+<script src="{% static 'lib/bootstrap-touchspin-4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
+
+<script src="{% static 'view_district/js/presidente.js' %}"></script>
+<script src="{% static 'view_district/js/cuotafrm.js' %}"></script>
+<script src="{% static 'view_district/js/meeting.js' %}"></script>
+
+
+<script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.js' %}"></script>
+<script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
+<script src="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/js/tempusdominus-bootstrap.js' %}"></script>
+<link rel="stylesheet" href="{% static 'lib/tempusdominus-bootstrap-4.5.37.0/css/tempusdominus-bootstrap.css' %}"/>
+
+
+{% block head_list %}{% endblock %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card {{ dshboard.card }}">
+    <div class="card-header">
+        <h3 class="card-title">
+            {{ title }}
+        </h3>
+        <div class="card-tools">
+            <small>Su último acceso al sistema fue el {{ request.user.last_login }}</small>
+        </div>
+    </div>
+    <div class="card-body" style="display: block;">
+        <div class="container-fluid">
+            <div class="card card-widget widget-user">
+                <div class="widget-user-header bg-dark">
+                    <h3 class="widget-user-username">
+                        <strong> BARRIO {{ barrio.name }}</strong> 
+                    </h3>
+                    <h4 class="widget-user-desc">
+                        PARROQUIA  <strong>{{ barrio.parroquia.name }}</strong> 
+                    </h4>
+                </div>
+                <div class="card-footer" style="background-color: white;">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <img src=" {{ barrio.image.url }} " style="width: 50%;"
+                                 class="img-fluid d-block mx-auto mb-2">
+                        </div>
+                    </div>
+                    <div class="row">
+                           <!-- MODAL CREAR REUNION -->
+                        <div class="col-sm-3 border-right">
+                            <div class="description-block">
+                                <h5 class="description-header">
+                                    
+                                </h5>
+                                <span class="description-text">
+                                    <a
+                                    id="modalActivate" type="button"
+                                    data-toggle="modal" data-target="#exampleModalPreview-4 "
+                                    data-toggle="tooltip"
+                                    title="Editar registro"
+                                    class="btn btn-dark btn-flat"
+                                    >
+                                        <i class="fas fa-edit">CREAR REUNIÓN</i>
+                                    </a>
+                                    <!-- Modal Agregar lISTA -->
+                                    <div class="modal fade right" id="exampleModalPreview-4" tabindex="-1" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog momodel modal-fluid" role="document">
+                                            <div class="modal-content modal-content ">
+                                                <div class=" modal-header   modal-header text-center">
+                                                    <h5 class="modal-title w-100" id="exampleModalPreviewLabel"> REUNIÓN </h5>
+                                                    <button type="button" class="close " data-dismiss="modal" aria-label="Close">
+                                                        <span style="font-size: 1.3em;" aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <!-- FORMULARIO -->
+                                                <div class="modal-body">
+                                                    <form class="form" method="post" enctype="multipart/form-data" id="frmMeeting"
+                                                    data-url="{{ list_url }}">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <label> <b> Ingresar el Asunto de la Reunión </b></label>
+                                                            <input type="text" class="form-control" placeholder="Ingresar el asunto de la reunion" id="id_subject" name="subject">
+
+                                                            <label ><b>Ingresar la descripción de la Reunión</b></label>
+                                                            <textarea type="text" class="form-control" cols="3" rows="3"  placeholder="Ingresar el codigo" id="id_description" name="description"></textarea>
+                                                           
+                                                            <label > <b>Elegir la fecha de la Reunión </b></label>
+                                                            <input type="text" name="fecha" class="form-control datetimepicker-input" id="id_fecha"  data-toggle="datetimepicker" data-target="#date">
+
+                                                            <label > <b>Elegir la hora de la Reunión </b></label>
+                                                            <input type="time" name="hora" class="form-control" id="id_hora"  >
+
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Registrar</button>
+
+                                                    </form>
+                                                    
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </span>
+                            </div>
+                        </div>
+                        <!-- MODAL CREAR CUOTA  -->
+                        <div class="col-sm-3 border-right">
+                            <div class="description-block">
+                                <span class="description-text">
+                                    <a
+                                    id="modalActivate" type="button"
+                                    data-toggle="modal" data-target="#exampleModalPreview-3 "
+                                    data-toggle="tooltip"
+                                    title="Editar registro"
+                                    class="btn btn-dark btn-flat"
+                                    >
+                                        <i class="fas fa-edit">CREAR CUOTA</i>
+                                    </a>
+                                    <!-- Modal Agregar lISTA -->
+                                    <div class="modal fade right" id="exampleModalPreview-3" tabindex="-3" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog momodel modal-fluid" role="document">
+                                            <div class="modal-content modal-content ">
+                                                <div class=" modal-header   modal-header text-center">
+                                                    <h5 class="modal-title w-100" id="exampleModalPreviewLabel"> PASAR LISTA </h5>
+                                                    <button type="button" class="close " data-dismiss="modal" aria-label="Close">
+                                                        <span style="font-size: 1.3em;" aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <!-- FORMULARIO -->
+                                                <div class="modal-body">
+                                                    <form class="form" method="post" enctype="multipart/form-data" id="frmCuota"
+                                                    data-url="{{ list_url }}">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <label for="">Motivo de cuota</label>
+                                                            <input type="text" class="form-control" placeholder="Ingresar el motivo de cuota" id="id_cuota" name="cuota">
+                                                            <label for="">Monto de la Cuota</label>
+                                                            <input type="text" class="form-control" placeholder="Ingresar el monto de la cuota" id="id_monto" name="monto">
+
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Registrar</button>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                      
+                        <div class="col-sm-3">
+                            <div class="description-block">
+                                <h5 class="description-header">
+                                    
+                                </h5>
+                                <span class="description-text">
+                                    <a
+                                    type="button"
+                                    title="Editar registro"
+                                    class="btn btn-dark btn-flat"
+                                    href="{% url 'district_list'  %}"
+                                    >
+                                    <i class="fas fa-undo">REGRESAR</i>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="description-block">
+                                <h5 class="description-header">
+                                    
+                                </h5>
+                                <span class="description-text">
+                                    <a
+                                    id="modalActivate" type="button"
+                                    data-toggle="modal" data-target="#exampleModalPreview-presidente "
+                                    data-toggle="tooltip"
+                                    title="Editar registro"
+                                    class="btn btn-dark btn-flat"
+                                    >
+                                        <i class="fas fa-edit">ACTUALIZAR PRESIDENTE</i>
+                                    </a>
+                                    <!-- Modal Agregar lISTA -->
+                                    <div class="modal fade right" id="exampleModalPreview-presidente" tabindex="-3" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog momodel modal-fluid" role="document">
+                                            <div class="modal-content modal-content ">
+                                                <div class=" modal-header   modal-header text-center">
+                                                    <h5 class="modal-title w-100" id="exampleModalPreviewLabel"> PRESIDENTE </h5>
+                                                    <button type="button" class="close " data-dismiss="modal" aria-label="Close">
+                                                        <span style="font-size: 1.3em;" aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <!-- FORMULARIO -->
+                                                <div class="modal-body">
+                                                    <form class="form" method="post" enctype="multipart/form-data" id="frmPresidentes"
+                                                    data-url="{{ list_url }}">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            {% for field in formPresiden.visible_fields %}
+                                                            <div class="form-group">
+                                                                <label>{{ field.label }}:</label>
+                                                                
+                                                                {{ field }}
+                                                                
+                                                            </div>
+                                                        {% endfor %}
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Registrar</button>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- REUNIONES -->
+             <div class="card card-widget">
+                <div class="card-header">
+                    <div class="user-block">
+                        <img class="img-circle" src="{% static 'img/default/noticias.png' %}" alt="User Image">
+                        <span class="username"><a href="#">Información Reuniones</a></span>
+                        <span class="description">{{ date_joined }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <table width="100%" class="table table-bordered table-striped" id="data3">
+                                    <thead>
+                                    <tr>
+                                        <!--Columns-->
+                                        <th class="text-center">Nro</th>
+                                        <th class="text-center">Tema</th>
+                                        <th class="text-center">Descripción</th>
+                                        <th class="text-center">Opciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--Rows-->
+                                    {% for i in reuniones  %}
+                                    <tr>
+                                        <td>{{ i.id }}</td>
+                                        <td>{{ i.subject | upper}}</td>
+                                        <td> {{ i.description | upper }}</td>
+                                        <td>
+                                            <div class="container text-center">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                      Menú
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                      <a class="dropdown-item" href="{% url 'verMeeting' i.id %}"><i class="fa fa-sign-in" aria-hidden="true"></i>Entrar a la Reunión</a>
+                                                    </div>
+                                                  </div>
+                                            </div>
+                                            
+                                        </td>
+                                    </tr>                                    
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+
+            <!-- CUOTAS -->
+            <div class="card card-widget">
+                <div class="card-header">
+                    <div class="user-block">
+                        <img class="img-circle" src="{% static 'img/default/noticias.png' %}" alt="User Image">
+                        <span class="username"><a href="#">Información Cuotas</a></span>
+                        <span class="description">{{ date_joined }}</span>
+                        
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <table width="100%" class="table table-bordered table-striped" id="data1">
+                                    <thead>
+                                    <tr>
+                                        <!--Columns-->
+                                        <th class="text-center">Nro</th>
+                                        <th class="text-center">Cuota Motivo</th>
+                                        <th class="text-center">Monto</th>
+                                        <th class="text-center">Fecha</th>
+                                        <th class="text-center">Opciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--Rows-->
+                                    {% for i in cuota  %}
+                                    <tr>
+                                        <td>{{ i.id }}</td>
+                                        <td>{{ i.cuota | upper}} </td>
+                                        <td>{{ i.monto | upper}} </td>
+                                        <td>{{ i.date | upper }}</td>
+                                        <td>
+                                            <div class="container text-center ">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                      Menú
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                      <a class="dropdown-item" href="{% url 'verFees' i.id %}"><i class="fa fa-sign-in" aria-hidden="true"></i>Ver Cuota</a>
+                                                    </div>
+                                                  </div>
+                                            </div>
+                                        </td>
+                                    </tr>                                    
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+           
+            <!-- INFORMACIÓN PRESIDENTE  -->
+            <div class="card card-widget">
+                <div class="card-header">
+                    <div class="user-block">
+                        <img class="img-circle" src="{% static 'img/default/noticias.png' %}" alt="User Image">
+                        <span class="username"><a href="#">Información General</a></span>
+                        <span class="description">{{ date_joined }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <table width="100%" class="table table-bordered table-striped" id="data">
+                                    <thead>
+                                    <tr>
+                                        <!--Columns-->
+                                        <th class="text-center">Nro</th>
+                                        <th class="text-center">Presidente</th>
+                                        <th class="text-center">Periodo</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--Rows-->
+                                    {% for i in presidentes  %}
+                                    <tr>
+                                        <td>{{ i.id }}</td>
+                                        <td>{{ i.user.user.first_name | upper}} {{ i.user.user.last_name | upper }}</td>
+                                        <td>{{ i.period | upper }}</td>
+                                    </tr>                                    
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+            <!---->
+            <div class="card-footer">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    {% if messages %}
+            var html = '<p>';
+            {% for message in messages %}
+                html += '{{ message }}<br>';
+            {% endfor %}
+            html += '</p>';
+            Swal.fire({
+                title: 'Mensaje!',
+                html: html,
+                icon: 'info'
+            });
+    {% endif %}
+</script>
+
+{% block box_footer_after %}
+
+{% endblock %}
+{% block javascript_list %}
+<script type="application/javascript">
+    
+    
+    var table;
+    $(function () {
+        table = $('#data').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+        $('.table')
+            .on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            .on('click', 'img', function () {
+                var src = $(this).attr('src');
+                load_image(src);
+            });
+    });
+
+    var table1;
+    $(function () {
+        table1 = $('#data1').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+        $('.table')
+            .on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            .on('click', 'img', function () {
+                var src = $(this).attr('src');
+                load_image(src);
+            });
+    });
+
+    var table2;
+    $(function () {
+        table2 = $('#data3').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            initComplete: function (settings, json) {
+
+            }
+        });
+
+        $('.table')
+            .on('draw', function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            .on('click', 'img', function () {
+                var src = $(this).attr('src');
+                load_image(src);
+            });
+    });
+</script>
+{% endblock %}
+{% endblock %}
